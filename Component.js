@@ -1,25 +1,48 @@
-const $app = document.querySelector('#app');
+class Component {
+  $target;
+  $state;
 
-let state = {
-  items: ['item1', 'item2', 'item3', 'item4'],
-};
+  constructor($target) {
+    this.$target = $target;
+    this.setup();
+    this.render();
+  }
 
-const render = () => {
-  const { items } = state;
-  $app.innerHTML = `
-    <ul>
-      ${items.map((item) => `<li>${item}</li>`).join('')}
-    </ul>
-    <button id="append">추가</button>
-  `;
-  document.querySelector('#append').addEventListener('click', () => {
-    setState({ items: [...items, `item${items.length + 1}`] });
-  });
-};
+  setup() {}
+  template() {
+    return '';
+  }
+  render() {
+    this.$target.innerHTML = this.template();
+    this.setEvent();
+  }
+  setEvent() {}
+  setState(newState) {
+    this.$state = { ...this.$state, ...newState };
+    this.render();
+  }
+}
 
-const setState = (newState) => {
-  state = { ...state, ...newState };
-  render();
-};
+class App extends Component {
+  setup() {
+    this.$state = { items: ['item1', 'item2'] };
+  }
 
-render();
+  template() {
+    const { items } = this.$state;
+    return `
+        <ul>
+            ${items.map((item) => `<li>${item}</li>`).join('')}
+        </ul>
+        <button>추가</button>
+      `;
+  }
+  setEvent() {
+    this.$target.querySelector('button').addEventListener('click', () => {
+      const { items } = this.$state;
+      this.setState({ items: [...items, `item${items.length + 1}`] });
+    });
+  }
+}
+
+new App(document.querySelector('#app'));
