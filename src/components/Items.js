@@ -20,18 +20,15 @@ export default class Items extends Component {
         `;
   }
   setEvent() {
-    // 이벤트 버블링으로 처리 -> 모든 이벤트를 this.$target에 등록하여 사용
-    this.$target.addEventListener('click', ({ target }) => {
+    this.addEvent('click', '.addBtn', () => {
+      const { items } = this.$state;
+      this.setState({ items: [...items, `item${items.length + 1}`] });
+    });
+
+    this.addEvent('click', '.deleteBtn', ({ target }) => {
       const items = [...this.$state.items];
-
-      if (target.classList.contains('addBtn')) {
-        this.setState({ items: [...items, `item${items.length + 1}`] });
-      }
-
-      if (target.classList.contains('deleteBtn')) {
-        items.splice(target.dataset.index, 1);
-        this.setState({ items });
-      }
+      items.splice(target.dataset.index, 1);
+      this.setState({ items });
     });
   }
 }
