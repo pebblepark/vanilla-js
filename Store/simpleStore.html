@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SimpleStore</title>
+  </head>
+  <body>
+    <script>
+      // 발행기관
+      class Publisher {
+        #state;
+        #observers = new Set();
+
+        constructor(state) {
+          this.#state = state;
+          Object.keys(state).forEach((key) =>
+            Object.defineProperty(this, key, {
+              get: () => this.#state[key],
+            })
+          );
+        }
+
+        // 상태 업데이트
+        setState(newState) {
+          this.#state = { ...this.#state, ...newState };
+          this.notify();
+        }
+
+        // 구독자 추가
+        addSubscriber(subscriber) {
+          this.#observers.add(subscriber);
+        }
+
+        // 구독자 알림
+        notify() {
+          this.#observers.forEach((fn) => fn());
+        }
+      }
+
+      // 구독자
+      class Subscriber {
+        #fn;
+
+        // 발행기관 알림 왔을 때 실행할 함수
+        constructor(callback) {
+          this.#fn = callback;
+        }
+
+        // 발행기관 구독
+        subscribe(publisher) {
+          publisher.addSubscriber(this.#fn);
+        }
+      }
+
+      // 발행기관 생성
+      const store = new Publisher({
+        a: 10,
+        b: 20,
+      });
+
+      // 구독자 생성
+      const addCalculator = new Subscriber(() =>
+        console.log(`a + b = ${store.a + store.b}`)
+      );
+      const multiplyCalculator = new Subscriber(() =>
+        console.log(`a * b = ${store.a * store.b}`)
+      );
+
+      // 구독자들이 발행기관 구독
+      addCalculator.subscribe(store);
+      multiplyCalculator.subscribe(store);
+
+      // 구독자에게 알림
+      store.notify();
+      // a + b = 30
+      // a * b = 200
+
+      // 발행기관 상태 변경 -> 구독자에게 알림
+      store.setState({ a: 100, b: 200 });
+      // a + b = 300
+      // a * b = 20000
+    </script>
+  </body>
+</html>
