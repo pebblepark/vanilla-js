@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>observer</title>
+  </head>
+  <body>
+    <script>
+      const state = { a: 10, b: 20 };
+
+      const stateKeys = Object.keys(state);
+      const observer = () =>
+        console.log(`${state.a} + ${state.b} = ${state.a + state.b}`);
+
+      stateKeys.forEach((key) => {
+        let _value = state[key];
+
+        Object.defineProperty(state, key, {
+          get() {
+            return _value;
+          },
+          set(value) {
+            _value = value;
+            observer();
+          },
+        });
+      });
+
+      observer();
+      state.a = 1;
+      state.b = 2;
+    </script>
+  </body>
+</html>
