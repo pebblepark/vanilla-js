@@ -8,27 +8,43 @@
   </head>
   <body>
     <script>
+      let currentObserver = null;
       const state = { a: 10, b: 20 };
 
       const stateKeys = Object.keys(state);
-      const observer = () =>
-        console.log(`${state.a} + ${state.b} = ${state.a + state.b}`);
 
       stateKeys.forEach((key) => {
         let _value = state[key];
+        const observers = new Set();
 
         Object.defineProperty(state, key, {
           get() {
+            if (currentObserver) observers.add(currentObserver);
             return _value;
           },
           set(value) {
             _value = value;
-            observer();
+            observers.forEach((fn) => fn());
           },
         });
       });
 
-      observer();
+      const addCalculator = () => {
+        currentObserver = addCalculator;
+        console.log(`${state.a} + ${state.b} = ${state.a + state.b}`);
+      };
+
+      const multiplyCalculator = () => {
+        currentObserver = multiplyCalculator;
+        console.log(`${state.a} * ${state.b} = ${state.a * state.b}`);
+      };
+
+      addCalculator();
+      state.a = 100;
+
+      multiplyCalculator();
+      state.b = 200;
+
       state.a = 1;
       state.b = 2;
     </script>
