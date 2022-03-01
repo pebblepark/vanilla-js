@@ -1,15 +1,17 @@
-import { observable } from "./core/observer.js";
+import { Store } from "./core/Store.js";
 
-export const store = {
-  state: observable({
+export const store = new Store({
+  state: {
     a: 10,
     b: 20,
-  }),
-
-  setState(newState) {
-    for (const [key, value] of Object.entries(newState)) {
-      if (!this.state[key]) continue;
-      this.state[key] = value;
-    }
   },
-};
+
+  mutations: {
+    SET_A(state, payload) {
+      state.a = payload;
+    },
+    SET_B(state, payload) {
+      state.b = payload;
+    },
+  },
+});
