@@ -1,5 +1,5 @@
 import { Component } from "./core/Component.js";
-import { store } from "./store.js";
+import { store } from "./vuexStore.js";
 
 const InputA = () => `<input id="stateA" value="${store.state.a}" size="5" />`;
 const InputB = () => `<input id="stateB" value="${store.state.b}" size="5" />`;

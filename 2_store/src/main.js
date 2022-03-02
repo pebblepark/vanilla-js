@@ -1,3 +1,3 @@
-import { App } from "./App.js";
+import { App } from "./VuexApp.js";
 
 new App(document.querySelector("#app"));
